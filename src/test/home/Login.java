@@ -1,7 +1,9 @@
 package test.home;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import test.BaseTest;
@@ -10,9 +12,7 @@ public class Login extends BaseTest {
     private String username;
     private String password;
 
-
-    public Login(WebDriverWait webDriverWait, String username, String password) {
-        super(webDriverWait);
+    public Login(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -30,18 +30,26 @@ public class Login extends BaseTest {
      * @author Elnaz Khorsand
      * @since aug-22-2018
      */
+
+
+
+
     public boolean doTest() {
 
-        try {
+            WebDriver webDriver;
+        webDriver= new ChromeDriver();
 
+        try {
+            WebDriverWait webDriverWait = new WebDriverWait(webDriver, 5);
+            webDriver.get("https://www.bamilo.com/");
             //1. Close the Popup voucher by clicking on close button
-            WebElement elementPopupCloseButton = this.webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("body > div.mfp-wrap.mfp-close-btn-in.mfp-auto-cursor.mfp-ready > div > div.mfp-content > div > i")));
+            WebElement elementPopupCloseButton = webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[1]/div/i")));
             if (elementPopupCloseButton.isDisplayed()) {
                 elementPopupCloseButton.click();
             }
 
             //2. Click on Login/Register button
-            WebElement elementLoginRegisterLink = this.webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-button-single")));
+            WebElement elementLoginRegisterLink = webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-button-single")));
             if (elementLoginRegisterLink.isDisplayed()) {
                 elementLoginRegisterLink.click();
             } else {
@@ -87,8 +95,11 @@ public class Login extends BaseTest {
             }
             return elementHelloText.isDisplayed();
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("An exception has happened: " + e.getLocalizedMessage());
             return false;
+        } finally {
+            webDriver.close();
         }
     }
 }
